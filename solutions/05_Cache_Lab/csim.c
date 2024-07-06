@@ -174,15 +174,13 @@ void LRU(Cache *cache, int set_index, int address_tag) {
       printf("miss\n");
     }
     hit_line = FindEvictionLine(cache, set_index);
-    UpdateCacheLine(cache, set_index, address_tag, hit_line);
-
   } else {
     hit_count++;
     if (verbose) {
       printf("hit\n");
     }
-    UpdateCacheLine(cache, set_index, address_tag, hit_line);
   }
+  UpdateCacheLine(cache, set_index, address_tag, hit_line);
 }
 
 /**
@@ -201,11 +199,9 @@ void ReadTrace(Cache *cache, int s, int b) {
   size_t address;   // 64 bits address
   int size;         // useless
 
-  // miss_count++;
   while (fscanf(fp, "%c %lx,%d", &identifier, &address, &size) > 0) {
     int address_tag = address >> (s + b);
-    int set_index = address >> b & ((1 << s) - 1);  // 左移补0 所以需要减1
-
+    int set_index = address >> b & ((1 << s) - 1);
     switch (identifier) {
       case 'I':
         break;
