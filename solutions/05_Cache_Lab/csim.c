@@ -9,7 +9,6 @@
  *
  */
 #include <getopt.h>
-#include <stdbool.h>  // Add this line to include the bool type
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
