@@ -2,24 +2,7 @@
  * @file csim.c
  * @author minghui.qin (mhqin1018@gmail.com)
  * @brief
- * @version 0.1
- * @date 2024-07-06
- *
- * @copyright Copyright (c) 2024
- *
- */
-#include <getopt.h>
-#include <stdbool.h>  // Add this line to include the bool type
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
-/**
- * @file csim.c
- * @author minghui.qin (mhqin1018@gmail.com)
- * @brief
- * @version 0.1
+ * @version 1.0
  * @date 2024-07-06
  *
  * @copyright Copyright (c) 2024
