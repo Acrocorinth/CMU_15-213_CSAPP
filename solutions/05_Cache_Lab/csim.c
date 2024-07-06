@@ -15,14 +15,33 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+/**
+ * @file csim.c
+ * @author minghui.qin (mhqin1018@gmail.com)
+ * @brief
+ * @version 0.1
+ * @date 2024-07-06
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+#include <getopt.h>
+#include <stdbool.h>  // Add this line to include the bool type
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
 #include "cachelab.h"
 
+// Cache line structure
 typedef struct CacheLine {
   int valid;
   int tag;
   int time_stamp;
 } CacheLine;
 
+// Cache structure
 typedef struct Cache_ {
   int S;
   int B;
@@ -30,12 +49,21 @@ typedef struct Cache_ {
   CacheLine **lines;
 } Cache;
 
+// Global variables
 int hit_count = 0;
 int miss_count = 0;
 int eviction_count = 0;
 int verbose = 0;
 char t[1000];
 
+/**
+ * @brief  initialize the cache
+ *
+ * @param s
+ * @param E
+ * @param b
+ * @return Cache*
+ */
 Cache *CacheInit(int s, int E, int b) {
   int S = 1 << s;
   int B = 1 << b;
@@ -55,6 +83,11 @@ Cache *CacheInit(int s, int E, int b) {
   return cache;
 }
 
+/**
+ * @brief Free the cache
+ *
+ * @param cache
+ */
 void CacheFree(Cache *cache) {
   for (int i = 0; i < cache->S; i++) {
     free(cache->lines[i]);
@@ -81,6 +114,14 @@ int JudgeHitOrMiss(Cache *cache, int set_index, int address_tag) {
   return -1;
 }
 
+/**
+ * @brief Update the cache line time stamp
+ *
+ * @param cache
+ * @param set_index
+ * @param address_tag
+ * @param bias
+ */
 void UpdateCacheLine(Cache *cache, int set_index, int address_tag, int bias) {
   cache->lines[set_index][bias].valid = 1;
   cache->lines[set_index][bias].tag = address_tag;
@@ -92,6 +133,13 @@ void UpdateCacheLine(Cache *cache, int set_index, int address_tag, int bias) {
   cache->lines[set_index][bias].time_stamp = 0;
 }
 
+/**
+ * @brief Find the line to be evicted
+ *
+ * @param cache
+ * @param set_index
+ * @return int
+ */
 int FindEvictionLine(Cache *cache, int set_index) {
   int max_time_stamp = -1;
   int max_time_stamp_line = -1;
@@ -111,6 +159,13 @@ int FindEvictionLine(Cache *cache, int set_index) {
   return max_time_stamp_line;
 }
 
+/**
+ * @brief LRU algorithm
+ *
+ * @param cache
+ * @param set_index
+ * @param address_tag
+ */
 void LRU(Cache *cache, int set_index, int address_tag) {
   int hit_line = JudgeHitOrMiss(cache, set_index, address_tag);
   if (hit_line == -1) {
@@ -155,15 +210,12 @@ void ReadTrace(Cache *cache, int s, int b) {
       case 'I':
         break;
       case 'L':
-        // hit_count++;
         LRU(cache, set_index, address_tag);
         break;
       case 'S':
-        // hit_count++;
         LRU(cache, set_index, address_tag);
         break;
       case 'M':
-        // hit_count++;
         LRU(cache, set_index, address_tag);
         LRU(cache, set_index, address_tag);
         break;
